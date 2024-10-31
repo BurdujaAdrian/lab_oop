@@ -31,18 +31,18 @@ pub struct Americano {
 }
 
 #[derive(Debug)]
-pub struct Cappucino {
+pub struct Cappuccino {
     pub(crate) base: Coffee,
     pub(crate) ml_of_milk: u32,
 }
 #[derive(Debug)]
 pub struct SyrupCappuccino {
-    pub(crate) base: Cappucino,
+    pub(crate) base: Cappuccino,
     pub(crate) syrup: SyrupType,
 }
 
 #[derive(Debug)]
 pub struct PuSpLatte {
-    pub(crate) base: Cappucino,
-    pub(crate) mg_of_pk_spice: u16,
+    pub(crate) base: Cappuccino,
+    pub(crate) mg_of_pk_spice: u32,
 }

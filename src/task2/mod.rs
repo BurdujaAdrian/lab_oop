@@ -9,16 +9,16 @@ pub trait CoffeeTrait {
 impl CoffeeTrait for Coffee {
     fn printCoffeeDetails(&self) {
         println!(
-            "Coffee name{}\nCoffee intensity: {:?}",
+            "Name:{}\nCoffee intensity: {:?}",
             self.name, self.coffee_int
         );
     }
 }
 
-impl CoffeeTrait for Cappucino {
+impl CoffeeTrait for Cappuccino {
     fn printCoffeeDetails(&self) {
         self.base.printCoffeeDetails();
-        println!("Cappucino milk: {} ml", self.ml_of_milk);
+        println!("Cappuccino milk: {} ml", self.ml_of_milk);
     }
 }
 
