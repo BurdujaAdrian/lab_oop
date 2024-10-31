@@ -20,29 +20,29 @@ pub enum SyrupType {
 
 #[derive(Debug)]
 pub struct Coffee {
-    coffee_int: Intensity,
-    name: String,
+    pub(crate) coffee_int: Intensity,
+    pub(crate) name: String,
 }
 
 #[derive(Debug)]
 pub struct Americano {
-    base: Coffee,
-    ml_of_water: u32,
+    pub(crate) base: Coffee,
+    pub(crate) ml_of_water: u32,
 }
 
 #[derive(Debug)]
 pub struct Cappucino {
-    base: Coffee,
-    ml_of_milk: u32,
+    pub(crate) base: Coffee,
+    pub(crate) ml_of_milk: u32,
 }
 #[derive(Debug)]
 pub struct SyrupCappuccino {
-    base: Cappucino,
-    syrup: SyrupType,
+    pub(crate) base: Cappucino,
+    pub(crate) syrup: SyrupType,
 }
 
 #[derive(Debug)]
 pub struct PuSpLatte {
-    base: Cappucino,
-    mg_of_pk_spice: u16,
+    pub(crate) base: Cappucino,
+    pub(crate) mg_of_pk_spice: u16,
 }
