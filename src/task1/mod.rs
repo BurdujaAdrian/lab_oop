@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 #[derive(Debug)]
-pub enum Intensity {
+pub(crate) enum Intensity {
     LIGHT,
     NORMAL,
     STRONG,
@@ -9,7 +9,7 @@ pub enum Intensity {
 
 #[repr(C)]
 #[derive(Debug)]
-pub enum SyrupType {
+pub(crate) enum SyrupType {
     MACADAMIA,
     VANILLA,
     COCONUT,
@@ -19,30 +19,30 @@ pub enum SyrupType {
 }
 
 #[derive(Debug)]
-pub struct Coffee {
+pub(crate) struct Coffee {
     pub(crate) coffee_int: Intensity,
     pub(crate) name: String,
 }
 
 #[derive(Debug)]
-pub struct Americano {
+pub(crate) struct Americano {
     pub(crate) base: Coffee,
     pub(crate) ml_of_water: u32,
 }
 
 #[derive(Debug)]
-pub struct Cappuccino {
+pub(crate) struct Cappuccino {
     pub(crate) base: Coffee,
     pub(crate) ml_of_milk: u32,
 }
 #[derive(Debug)]
-pub struct SyrupCappuccino {
+pub(crate) struct SyrupCappuccino {
     pub(crate) base: Cappuccino,
     pub(crate) syrup: SyrupType,
 }
 
 #[derive(Debug)]
-pub struct PuSpLatte {
+pub(crate) struct PuSpLatte {
     pub(crate) base: Cappuccino,
     pub(crate) mg_of_pk_spice: u32,
 }
