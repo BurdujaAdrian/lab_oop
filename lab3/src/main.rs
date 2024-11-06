@@ -8,6 +8,8 @@ use task4::Barista;
 fn main() {
     println!("Welcome to digital barista !");
 
+    let mut barrista: Barista = Barista::init();
+
     loop {
         println!("Here are your options:");
         println!("");
@@ -17,7 +19,6 @@ fn main() {
         println!("4. Exit");
         println!("");
         print!("Your choose: ");
-        let mut barrista: Barista = Barista::init();
 
         let mut buffer = String::new();
         io::stdin()

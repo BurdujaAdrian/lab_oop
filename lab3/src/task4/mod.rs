@@ -19,6 +19,7 @@ struct Order {
     q2: u32,
     syr: Option<SyrupType>,
 }
+
 pub struct Barista {
     queue: Vec<Box<dyn CoffeeTrait>>,
 }
@@ -54,6 +55,7 @@ impl Barista {
     }
     pub fn print_queue(&self) {
         for drink in &self.queue {
+            println!("printing queue");
             drink.printCoffeeDetails();
             println!();
         }
@@ -113,7 +115,7 @@ impl Barista {
             "cappuccino with syrup" | "syrup cappuccino" => {
                 println!("preparing syrup cappuccino...");
                 pending_order.c_type = CoffeeType::SYCAP;
-                self.prepare_syrup(&mut pending_order);
+                self.prepare_syrup_cappuccino(&mut pending_order);
                 self.queue
                     .push(Box::new(SyrupCappuccino::makeSyrupCappuccino(
                         pending_order.inten.unwrap(),
@@ -125,7 +127,7 @@ impl Barista {
             "pumpkin spice latte" => {
                 println!("preparing pumpkin spice latte...");
                 pending_order.c_type = CoffeeType::PUMPK;
-                self.prepare_spice(&mut pending_order);
+                self.prepare_pk_spice_latte(&mut pending_order);
                 self.queue.push(Box::new(PuSpLatte::makePuSpLatte(
                     pending_order.inten.unwrap(),
                     pending_order.q1,
@@ -228,7 +230,7 @@ impl Barista {
             _ => return println!("This option is not supported, please try again"),
         }
     }
-    fn prepare_syrup(&mut self, pending_order: &mut Order) {
+    fn prepare_syrup_cappuccino(&mut self, pending_order: &mut Order) {
         self.prepare_cappuccino(pending_order);
 
         println!("Which one of these syrups do you want to be added:");
@@ -274,7 +276,7 @@ impl Barista {
             _ => return println!("This option is not supported, please try again"),
         }
     }
-    fn prepare_spice(&mut self, pending_order: &mut Order) {
+    fn prepare_pk_spice_latte(&mut self, pending_order: &mut Order) {
         self.prepare_cappuccino(pending_order);
         println!("How many mg of pumpkin spice do you want:");
         println!("1:    50 mg");
