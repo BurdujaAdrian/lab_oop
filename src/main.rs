@@ -6,11 +6,38 @@ use std::{
     borrow::BorrowMut,
     cell::{RefCell, RefMut},
     fs, io,
+    process::Command,
+    thread,
+    time::Duration,
 };
 
 fn main() {
-    println!("Hello, world!");
-    test_semaphore_work();
+    let mut n_didnt: i32 = 0;
+    let mut n_r_dined: i32 = 0;
+    let mut n_p_dined: i32 = 0;
+    let mut n_e_refueled: i32 = 0;
+    let mut n_g_refueled: i32 = 0;
+    let mut el_cons: u32 = 0;
+    let mut gas_cons: u32 = 0;
+
+    let mut semaphore = Semaphore::init(
+        &mut n_didnt,
+        &mut n_r_dined,
+        &mut n_p_dined,
+        &mut n_e_refueled,
+        &mut n_g_refueled,
+        &mut el_cons,
+        &mut gas_cons,
+    );
+
+    let script_path = "";
+    match Command::new("python").arg(script_path).spawn() {
+        Ok(mut child) => {
+            child.wait().unwrap();
+        }
+        Err(_) => (),
+    }
+    semaphore.work();
 }
 
 //
@@ -211,6 +238,62 @@ impl Semaphore {
             return;
         });
         println!("{:#?}", cars);
+        self.GasStation_forHumans.serve_cars();
+        self.GasStation_forRobots.serve_cars();
+        self.ElectroStation_forRobots.serve_cars();
+        self.ElectroStation_forHumans.serve_cars();
+        Ok(())
+    }
+
+    fn test_work(&mut self) -> io::Result<()> {
+        let path = "./test_queue";
+
+        let entries = fs::read_dir(path)?;
+
+        let file_names: Vec<String> = entries
+            .filter_map(|entry| {
+                let path = entry.ok()?.path();
+                if path.is_file() {
+                    path.file_name()?.to_str().map(|s| s.to_owned())
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        let cars: Vec<Car> = file_names
+            .into_iter()
+            .map(|path| {
+                println!("path:{}", "./queue/".to_owned() + &path);
+                serde_json::from_str(&fs::read_to_string("./queue/".to_owned() + &path).unwrap())
+                    .expect("failed to parse json")
+            })
+            .collect();
+
+        cars.iter().for_each(|car| {
+            if car.passengers == PassangerType::PEOPLE {
+                if car.r#type == CarType::GAS {
+                    self.GasStation_forHumans.add_car(*car);
+                    return;
+                }
+                // else its electric
+                self.ElectroStation_forHumans.add_car(*car);
+                return;
+            }
+            // else its for robots
+            if car.r#type == CarType::GAS {
+                self.GasStation_forRobots.add_car(*car);
+                return;
+            }
+            // else its electric
+            self.ElectroStation_forRobots.add_car(*car);
+            return;
+        });
+        println!("{:#?}", cars);
+        self.GasStation_forHumans.serve_cars();
+        self.GasStation_forRobots.serve_cars();
+        self.ElectroStation_forRobots.serve_cars();
+        self.ElectroStation_forHumans.serve_cars();
         Ok(())
     }
 }
@@ -677,7 +760,7 @@ fn test_serving() {
     assert_eq!(gass_cons, 30);
 }
 
-//#[test]
+#[test]
 fn test_semaphore_work() {
     let mut n_who_did_not: i32 = 0;
     let mut n_of_people_who_dined: i32 = 0;
@@ -697,8 +780,15 @@ fn test_semaphore_work() {
         &mut gas_cons,
     );
 
-    semaphore.work();
-    //    panic!("end the test");
+    semaphore.test_work();
+
+    assert_eq!(n_who_did_not, 4);
+    assert_eq!(n_of_people_who_dined, 1);
+    assert_eq!(n_of_robots_who_dined, 0);
+    assert_eq!(n_of_electric_cars_refueled, 1);
+    assert_eq!(n_of_gas_cars_refueled, 4);
+    assert_eq!(electric_cons, 10);
+    assert_eq!(gas_cons, 127);
 }
 
 //@end of tests
